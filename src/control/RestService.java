@@ -14,23 +14,71 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import dao.QuestionnareTestDAO;
 import dao.StudentDAO;
+import model.QuestionnareTest;
 import model.Student;
 
+import org.json.JSONObject;
 
 @Path("")
 public class RestService {
+	private QuestionnareTestDAO questionnareTestDAO = new QuestionnareTestDAO();
 	private StudentDAO studendDAO = new StudentDAO();
-	
+
 	@GET
-	@Path("/case/{id}")
+	@Path("/student/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCase(@PathParam("id") int id) {
+	public Response getStudent(@PathParam("id") int id) {
 		System.out.println(id);
 		Student student = studendDAO.findById(Student.class, id);
 		
 		return Response.ok()
-//				.entity(medicalCase)
+				.entity(student)
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.build();
+	}
+	
+	@GET
+	@Path("/questionnares")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getStudent() {
+		return Response.ok()
+//				.entity(student)
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.build();
+	}
+	
+	@POST
+	@Path("/questionnare/save")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response saveQuestionnare(String questionnareParam) {
+		questionnareTestDAO.startOperation();
+
+		System.out.println(questionnareParam);
+		JSONObject questionnareJSON = new JSONObject(questionnareParam);
+		QuestionnareTest questionnareTest = new QuestionnareTest();
+		
+		questionnareTest.setName(questionnareJSON.getString("name"));
+		questionnareTest.setAnimation(questionnareJSON.getInt("animation"));
+		questionnareTest.setLayout(questionnareJSON.getInt("layout"));
+		questionnareTest.setNarrative(questionnareJSON.getInt("narrative"));
+		questionnareTest.setVideo(questionnareJSON.getInt("video"));
+
+		questionnareTest.setQuestion3(questionnareJSON.getString("question3"));
+		questionnareTest.setQuestion4(questionnareJSON.getBoolean("question4"));
+
+		questionnareTest.setQuestion2(questionnareJSON.get("question2").toString());
+		questionnareTest.setQuestion2Others(questionnareJSON.getString("question2Others"));
+        System.out.println(questionnareTest);
+        
+        questionnareTestDAO.save(questionnareTest);
+        questionnareTestDAO.stopOperation(true);
+//        questionnareTestDAO.closeConnection();
+		return Response.ok()
+				.entity(questionnareTest)
 				.header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
@@ -65,66 +113,5 @@ public class RestService {
 //        return new JSONWithPadding(new GenericEntity<MedicalCase>(medicalCase) {}, callback);
 //	}
 //	
-//	@POST
-//	@Path("/case/save")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response saveCase(String medicalCaseParam) {
-//		caseDAO.startOperation();
-//
-//		System.out.println(medicalCaseParam);
-//		JSONObject medicalcaseJSON = new JSONObject(medicalCaseParam);
-//		MedicalCase medicalCase = new MedicalCase();
-//		
-//		medicalCase.setName(medicalcaseJSON.getString("name"));
-//		medicalCase.setWon_text(medicalcaseJSON.getString("won_text"));
-//		medicalCase.setLost_text(medicalcaseJSON.getString("lost_text"));
-//		medicalCase.setRandomize_actions(medicalcaseJSON.getBoolean("randomize_actions"));
-//		medicalCase.setAllow_negative_score(medicalcaseJSON.getBoolean("allow_negative_score"));
-//		medicalCase.setTimeout(medicalcaseJSON.getInt("timeout"));
-//
-//		JSONArray states = medicalcaseJSON.getJSONArray("states");
-//        for (int i = 0; i < states.length(); i++) {
-//        	State state = new State();
-//        	
-//        	state.setTitle(states.getJSONObject(i).getString("title"));
-//        	state.setDescription(states.getJSONObject(i).getString("description"));
-//        	state.setFeedback(states.getJSONObject(i).getString("feedback"));
-////        	state.setIdent(states.getJSONObject(i).getInt("ident"));
-//        	
-//            JSONArray actions = states.getJSONObject(i).getJSONArray("actions");
-//            
-//            for (int j = 0; j < actions.length(); j++) {
-//            	Action action = new Action();
-//            	action.setCorrect(actions.getJSONObject(j).getBoolean("correct"));
-//            	action.setProceed(actions.getJSONObject(j).getBoolean("proceed"));
-//            	action.setText(actions.getJSONObject(j).getString("text"));
-//            	action.setTarget(actions.getJSONObject(j).getInt("target"));
-//            	
-//            	state.getActions().add(action);
-//            	action.setState(state);
-//			}
-//            
-//            medicalCase.getStates().add(state);
-//            state.setMedicalCase(medicalCase);
-//        }
-//        
-////        for (int i = 0; i < states.length(); i++) {
-////            JSONArray actions = states.getJSONObject(i).getJSONArray("actions");
-////            for (int j = 0; j < actions.length(); j++) {
-////            	State target = medicalCase.getStates().get();
-////            	medicalCase.getStates().get(i).getActions().get(j).setTarget(target);
-////			}
-////        }
-//        
-//        System.out.println(medicalCase);
-//        
-//		caseDAO.save(medicalCase);
-//		caseDAO.stopOperation(true);
-//		caseDAO.closeConnection();
-//		return Response.ok()
-//				.entity(medicalCaseParam)
-//				.header("Access-Control-Allow-Origin", "*")
-//				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-//				.build();
-//	}
+
 }

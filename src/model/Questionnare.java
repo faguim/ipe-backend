@@ -25,8 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@AssociationOverride(name = "student", joinColumns = @JoinColumn(name = "id")),
 	@AssociationOverride(name = "video", joinColumns = @JoinColumn(name = "id"))
 })
-public class Questionnare implements Serializable{
-	private static final long serialVersionUID = -8686237974877803285L;
+public class Questionnare {
 
 	@EmbeddedId
 	private QuestionnareId pk = new QuestionnareId();

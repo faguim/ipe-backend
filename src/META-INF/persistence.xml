@@ -10,6 +10,8 @@
 		<class>model.Student</class>
 		<class>model.Video</class>
 		<class>model.Questionnare</class>
+		<class>model.QuestionnareTest</class>
+		
 		
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
